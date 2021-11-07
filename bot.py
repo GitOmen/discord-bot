@@ -1,6 +1,9 @@
-import discord
+import asyncio
 import json
+import traceback
 from datetime import datetime
+
+import discord
 from discord.ext import commands
 
 
@@ -69,7 +72,7 @@ async def on_command_error(ctx, error):
 @client.command()
 @commands.has_permissions(manage_messages=True)
 async def clear(ctx, amount=1):
-    await ctx.channel.purge(limit=(amount+1))
+    await ctx.channel.purge(limit=(amount + 1))
 
 
 @clear.error
@@ -137,10 +140,36 @@ async def on_voice_state_update(member, before, after):
         join_embed.timestamp = datetime.utcnow()
 
         await channel.send(embed=join_embed)
+
     if before.channel is None and after.channel is not None:
         await embed('Voice Join', discord.Colour.green(), after.channel)
     elif before.channel is not None and after.channel is None:
         await embed('Voice Leave', discord.Colour.red(), before.channel)
+
+
+@client.command(name="play")
+async def play(ctx):
+    try:
+        voice_channel = ctx.author.voice.channel
+        if voice_channel is not None:
+            voice_client = await voice_channel.connect()
+
+            async def after(error):
+                if error:
+                    print(error)
+                await asyncio.sleep(1)
+                await voice_client.disconnect()
+
+            voice_client.play(discord.FFmpegPCMAudio(source="sound.wav"),
+                              after=lambda error: asyncio.run_coroutine_threadsafe(after(error), client.loop)
+                              )
+        else:
+            await ctx.send(str(ctx.author.name) + "is not in a channel.")
+        # Delete command after the audio is done playing.
+        await ctx.message.delete()
+    except:
+        traceback.print_exc()
+
 
 with open("token.txt", "r") as f:
     token = f.read().strip()
