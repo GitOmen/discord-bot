@@ -142,18 +142,6 @@ async def on_voice_state_update(member, before, after):
     elif before.channel is not None and after.channel is None:
         await embed('Voice Leave', discord.Colour.red(), before.channel)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-client.run('discord_token')
+with open("token.txt", "r") as f:
+    token = f.read().strip()
+client.run(token)
