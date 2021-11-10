@@ -115,6 +115,8 @@ async def ping(ctx):
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
         await ctx.send('Invalid command used.')
+        return
+    traceback.print_exception(type(error), error, error.__traceback__)
 
 
 @client.command()
@@ -170,26 +172,23 @@ async def on_voice_state_update(member, before, after):
 
 @client.command(name="play")
 async def play(ctx, *, url):
-    try:
-        voice_channel = ctx.author.voice.channel
-        if voice_channel is not None:
-            voice_client = await voice_channel.connect()
+    voice_channel = ctx.author.voice.channel
+    if voice_channel is not None:
+        voice_client = await voice_channel.connect()
 
-            async def after(error):
-                if error:
-                    print(error)
-                await asyncio.sleep(1)
-                await voice_client.disconnect()
+        async def after(error):
+            if error:
+                print(error)
+            await asyncio.sleep(1)
+            await voice_client.disconnect()
 
-            player = await YTDLSource.from_url(url, loop=client.loop, stream=True)
-            voice_client.play(player,
-                              after=lambda error: asyncio.run_coroutine_threadsafe(after(error), client.loop))
+        player = await YTDLSource.from_url(url, loop=client.loop, stream=True)
+        voice_client.play(player,
+                          after=lambda error: asyncio.run_coroutine_threadsafe(after(error), client.loop))
 
-            await ctx.send(f'Now playing: {player.title}')
-        else:
-            await ctx.send(str(ctx.author.name) + "is not in a voice channel.")
-    except:
-        traceback.print_exc()
+        await ctx.send(f'Now playing: {player.title}')
+    else:
+        await ctx.send(str(ctx.author.name) + "is not in a voice channel.")
 
 
 @client.command(description="pauses music")
