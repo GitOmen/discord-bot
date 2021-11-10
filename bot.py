@@ -187,9 +187,28 @@ async def play(ctx, *, url):
 
             await ctx.send(f'Now playing: {player.title}')
         else:
-            await ctx.send(str(ctx.author.name) + "is not in a channel.")
+            await ctx.send(str(ctx.author.name) + "is not in a voice channel.")
     except:
         traceback.print_exc()
+
+
+@client.command(description="pauses music")
+async def pause(ctx):
+    ctx.voice_client.pause()
+    await ctx.send("Paused ⏸️")
+
+
+@client.command(description="resumes music")
+async def resume(ctx):
+    ctx.voice_client.resume()
+    await ctx.send("Resuming ⏯️")
+
+
+@client.command(name="stop", description="stop playing and disconnect from voice channel")
+async def stop(ctx):
+    if ctx.voice_client.is_playing():
+        ctx.voice_client.stop()
+        await ctx.send("Stopped ⏹︎")
 
 
 with open("token.txt", "r") as f:
