@@ -94,8 +94,8 @@ async def on_guild_remove(guild):
         json.dump(config, f, indent=4)
 
 
-@client.command()
-async def changeprefix(ctx, prefix):
+@client.command(description="sets custom command prefix")
+async def change_prefix(ctx, prefix):
     with open('config.json', 'r') as f:
         config = json.load(f)
 
@@ -106,7 +106,7 @@ async def changeprefix(ctx, prefix):
     await ctx.send(f"You've changed prefix to: '{prefix}'")
 
 
-@client.command()
+@client.command(description="checks response latency")
 async def ping(ctx):
     await ctx.send(f"Pong!{round(client.latency * 1000)}ms")
 
@@ -119,7 +119,7 @@ async def on_command_error(ctx, error):
     traceback.print_exception(type(error), error, error.__traceback__)
 
 
-@client.command()
+@client.command(description="purges specified amount of recent messages")
 @commands.has_permissions(manage_messages=True)
 async def clear(ctx, amount=1):
     await ctx.channel.purge(limit=(amount + 1))
@@ -131,7 +131,7 @@ async def clear_error(ctx, error):
         await ctx.send('Please specify an amount of messages to delete.')
 
 
-@client.command()
+@client.command(description="sets voice join/leave log channel")
 async def set_log_channel(ctx):
     with open('config.json', 'r') as f:
         config = json.load(f)
@@ -170,7 +170,24 @@ async def on_voice_state_update(member, before, after):
         await embed('Voice Leave', discord.Colour.red(), before.channel)
 
 
-@client.command(name="play")
+# class MusicPlayer:
+#     def __init__(self):
+#         ...
+#
+#     def play(self):
+#         ...
+#
+#     def pause(self):
+#         ...
+#
+#     def resume(self):
+#         ...
+#
+#     def stop(self):
+#         ...
+
+
+@client.command(description="adds song to music queue")
 async def play(ctx, *, url):
     voice_channel = ctx.author.voice.channel
     if voice_channel is not None:
@@ -203,7 +220,7 @@ async def resume(ctx):
     await ctx.send("Resuming ⏯️")
 
 
-@client.command(name="stop", description="stop playing and disconnect from voice channel")
+@client.command(description="stops playing and disconnect from voice channel")
 async def stop(ctx):
     if ctx.voice_client.is_playing():
         ctx.voice_client.stop()
