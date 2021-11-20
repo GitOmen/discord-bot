@@ -1,58 +1,11 @@
-import asyncio
 import json
 import traceback
 from datetime import datetime
 
 import discord
-import youtube_dl
 from discord.ext import commands
 
-# Suppress noise about console usage from errors
-youtube_dl.utils.bug_reports_message = lambda: ''
-
-ytdl_format_options = {
-    'format': 'bestaudio/best',
-    'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
-    'restrictfilenames': True,
-    'noplaylist': True,
-    'nocheckcertificate': True,
-    'ignoreerrors': False,
-    'logtostderr': False,
-    'quiet': True,
-    'no_warnings': True,
-    'default_search': 'auto',
-    'source_address': '0.0.0.0'  # bind to ipv4 since ipv6 addresses cause issues sometimes
-}
-
-ffmpeg_options = {
-    # https://stackoverflow.com/questions/61959495
-    'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
-    'options': '-vn'
-}
-
-ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
-
-
-class YTDLSource(discord.PCMVolumeTransformer):
-    def __init__(self, source, *, data, volume=0.5):
-        super().__init__(source, volume)
-
-        self.data = data
-
-        self.title = data.get('title')
-        self.url = data.get('url')
-
-    @classmethod
-    async def from_url(cls, url, *, loop=None, stream=False):
-        loop = loop or asyncio.get_event_loop()
-        data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=not stream))
-
-        if 'entries' in data:
-            # take first item from a playlist
-            data = data['entries'][0]
-
-        filename = data['url'] if stream else ytdl.prepare_filename(data)
-        return cls(discord.FFmpegPCMAudio(filename, **ffmpeg_options), data=data)
+from music import Music
 
 
 def get_prefix(_client, message):
@@ -69,6 +22,7 @@ client = commands.Bot(command_prefix=get_prefix, intents=intents)
 @client.event
 async def on_ready():
     await client.change_presence(status=discord.Status.online)
+    client.add_cog(Music(client))
     print("Bot is ready.")
 
 
@@ -168,63 +122,6 @@ async def on_voice_state_update(member, before, after):
         await embed('Voice Join', discord.Colour.green(), after.channel)
     elif before.channel is not None and after.channel is None:
         await embed('Voice Leave', discord.Colour.red(), before.channel)
-
-
-# class MusicPlayer:
-#     def __init__(self):
-#         ...
-#
-#     def play(self):
-#         ...
-#
-#     def pause(self):
-#         ...
-#
-#     def resume(self):
-#         ...
-#
-#     def stop(self):
-#         ...
-
-
-@client.command(description="adds song to music queue")
-async def play(ctx, *, url):
-    voice_channel = ctx.author.voice.channel
-    if voice_channel is not None:
-        voice_client = await voice_channel.connect()
-
-        async def after(error):
-            if error:
-                print(error)
-            await asyncio.sleep(1)
-            await voice_client.disconnect()
-
-        player = await YTDLSource.from_url(url, loop=client.loop, stream=True)
-        voice_client.play(player,
-                          after=lambda error: asyncio.run_coroutine_threadsafe(after(error), client.loop))
-
-        await ctx.send(f'Now playing: {player.title}')
-    else:
-        await ctx.send(str(ctx.author.name) + "is not in a voice channel.")
-
-
-@client.command(description="pauses music")
-async def pause(ctx):
-    ctx.voice_client.pause()
-    await ctx.send("Paused ⏸️")
-
-
-@client.command(description="resumes music")
-async def resume(ctx):
-    ctx.voice_client.resume()
-    await ctx.send("Resuming ⏯️")
-
-
-@client.command(description="stops playing and disconnect from voice channel")
-async def stop(ctx):
-    if ctx.voice_client.is_playing():
-        ctx.voice_client.stop()
-        await ctx.send("Stopped ⏹︎")
 
 
 with open("token.txt", "r") as f:
