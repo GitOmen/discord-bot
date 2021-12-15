@@ -190,3 +190,14 @@ class Music(commands.Cog):
         await player.stop()
         await ctx.voice_client.disconnect(force=True)
         await ctx.send('*⃣ | Disconnected.')
+
+    @commands.command(aliases=['forceskip', 'fs'], description="Plays the next track in the queue, if any.")
+    async def skip(self, ctx, amount: int = 1):
+        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+
+        if not player.is_playing:
+            await ctx.send("Not playing!")
+
+        for i in range(amount):
+            await player.skip()
+        await ctx.send(f"Skipped {amount} ⏭️")

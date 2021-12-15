@@ -8,6 +8,7 @@
 - `play` song or playlist from YouTube/SoundCloud/Spotify (for single song both direct link or search query can be used e.g. `.play darude sandstorm`)
 - `pause`\ `resume` player
 - `disconnect` bot from voice channel and clear player queue
+- `skip` specified amount of tracks in queue (one if no arguments passed)
 
 # To Do
 
