@@ -82,12 +82,6 @@ async def clear(ctx, amount: int = 1):
     await ctx.channel.purge(limit=(amount + 1))
 
 
-@clear.error
-async def clear_error(ctx, error):
-    if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send('Please specify an amount of messages to delete.')
-
-
 @client.command()
 async def set_log_channel(ctx):
     """ Sets voice join/leave log channel. """

@@ -1,5 +1,7 @@
 .idea
 config.json
+music_queue.py
+music_queue_test.py
 sound.wav
 token.txt
 venv
