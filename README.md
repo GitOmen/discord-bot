@@ -9,6 +9,7 @@
 - `pause`\ `resume` player
 - `disconnect` bot from voice channel and clear player queue
 - `skip` specified amount of tracks in queue (one if no arguments passed)
+- `shuffle` queue
 
 # To Do
 
@@ -23,7 +24,6 @@
 
 - show queue
 - clear queue
-- shuffle queue
 - loop queue
 - move song in queue
 - remove song from queue

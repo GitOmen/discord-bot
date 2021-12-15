@@ -201,3 +201,18 @@ class Music(commands.Cog):
         for i in range(amount):
             await player.skip()
         await ctx.send(f"Skipped {amount} ⏭️")
+
+    @commands.command(description="Shuffles queue.")
+    async def shuffle(self, ctx):
+        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+
+        if not player.queue:
+            await ctx.send("Nothing in queue!")
+
+        if player.shuffle is True:
+            player.set_shuffle(False)
+            player.set_shuffle(True)
+        else:
+            player.set_shuffle(True)
+
+        await ctx.send(f"Shuffled 🔀️")
