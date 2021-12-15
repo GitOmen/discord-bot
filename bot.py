@@ -48,8 +48,9 @@ async def on_guild_remove(guild):
         json.dump(config, f, indent=4)
 
 
-@client.command(description="sets custom command prefix")
+@client.command()
 async def change_prefix(ctx, prefix):
+    """ Sets custom command prefix. """
     with open('config.json', 'r') as f:
         config = json.load(f)
 
@@ -60,8 +61,9 @@ async def change_prefix(ctx, prefix):
     await ctx.send(f"You've changed prefix to: '{prefix}'")
 
 
-@client.command(description="checks response latency")
+@client.command()
 async def ping(ctx):
+    """ Checks websocket response latency. """
     await ctx.send(f"Pong!{round(client.latency * 1000)}ms")
 
 
@@ -73,9 +75,10 @@ async def on_command_error(ctx, error):
     traceback.print_exception(type(error), error, error.__traceback__)
 
 
-@client.command(description="purges specified amount of recent messages")
+@client.command()
 @commands.has_permissions(manage_messages=True)
-async def clear(ctx, amount=1):
+async def clear(ctx, amount: int = 1):
+    """ Purges specified amount of recent messages. One if no arguments passed """
     await ctx.channel.purge(limit=(amount + 1))
 
 
@@ -85,8 +88,9 @@ async def clear_error(ctx, error):
         await ctx.send('Please specify an amount of messages to delete.')
 
 
-@client.command(description="sets voice join/leave log channel")
+@client.command()
 async def set_log_channel(ctx):
+    """ Sets voice join/leave log channel. """
     with open('config.json', 'r') as f:
         config = json.load(f)
 

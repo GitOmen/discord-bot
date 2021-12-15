@@ -157,8 +157,9 @@ class Music(commands.Cog):
         if not player.is_playing:
             await player.play()
 
-    @commands.command(description="pauses music")
+    @commands.command()
     async def pause(self, ctx):
+        """ Pauses music player. """
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
         if player.is_playing:
@@ -166,8 +167,9 @@ class Music(commands.Cog):
 
         return await ctx.send("Paused ⏸️")
 
-    @commands.command(description="resumes music")
+    @commands.command()
     async def resume(self, ctx):
+        """ Resumes music player. """
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
         if player.is_playing and player.paused is True:
@@ -191,8 +193,9 @@ class Music(commands.Cog):
         await ctx.voice_client.disconnect(force=True)
         await ctx.send('*⃣ | Disconnected.')
 
-    @commands.command(aliases=['forceskip', 'fs'], description="Plays the next track in the queue, if any.")
+    @commands.command(aliases=['forceskip', 'fs'])
     async def skip(self, ctx, amount: int = 1):
+        """ Plays the next track in the queue, if any. """
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
         if not player.is_playing:
@@ -202,8 +205,9 @@ class Music(commands.Cog):
             await player.skip()
         await ctx.send(f"Skipped {amount} ⏭️")
 
-    @commands.command(description="Shuffles queue.")
+    @commands.command()
     async def shuffle(self, ctx):
+        """ Shuffles queue. """
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
         if not player.queue:
