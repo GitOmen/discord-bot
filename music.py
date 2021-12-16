@@ -161,29 +161,20 @@ class Music(commands.Cog):
     async def pause(self, ctx):
         """ Pauses music player. """
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-
-        if player.is_playing:
-            await player.set_pause(True)
-
+        await player.set_pause(True)
         return await ctx.send("Paused ⏸️")
 
     @commands.command()
     async def resume(self, ctx):
         """ Resumes music player. """
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-
-        if player.is_playing and player.paused is True:
-            await player.set_pause(False)
-
+        await player.set_pause(False)
         await ctx.send("Resuming ▶️")
 
     @commands.command(aliases=['dc'])
     async def disconnect(self, ctx):
         """ Disconnects the player from the voice channel and clears its queue. """
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-
-        if not player.is_connected:
-            return await ctx.send('Not connected.')
 
         if not ctx.author.voice or (player.is_connected and ctx.author.voice.channel.id != int(player.channel_id)):
             return await ctx.send('You\'re not in my voicechannel!')
@@ -198,25 +189,13 @@ class Music(commands.Cog):
         """ Plays the next track in the queue, if any. """
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
-        if not player.is_playing:
-            await ctx.send("Not playing!")
-
         for i in range(amount):
             await player.skip()
         await ctx.send(f"Skipped {amount} ⏭️")
 
     @commands.command()
     async def shuffle(self, ctx):
-        """ Shuffles queue. """
+        """ Toggles shuffle mode. """
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-
-        if not player.queue:
-            await ctx.send("Nothing in queue!")
-
-        if player.shuffle is True:
-            player.set_shuffle(False)
-            player.set_shuffle(True)
-        else:
-            player.set_shuffle(True)
-
-        await ctx.send(f"Shuffled 🔀️")
+        player.set_shuffle(not player.shuffle)
+        await ctx.send(f'Shuffle {"enabled 🔀️" if player.shuffle else "disabled 🔀️"}')
