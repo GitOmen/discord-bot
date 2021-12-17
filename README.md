@@ -1,3 +1,11 @@
+# Discord Bot
+
+This is a multi-functional discord bot created with following technologies:
+
+- Python 3.9
+- [discord.py](https://github.com/Rapptz/discord.py) 1.7.3
+- [lavalink](https://github.com/Devoxin/Lavalink.py) 3.1.4
+
 # Features
 
 - custom command prefix (default: `.`, can be changed with `change_prefix` command)
