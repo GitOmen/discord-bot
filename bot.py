@@ -2,8 +2,8 @@ import json
 import traceback
 from datetime import datetime
 
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 
 from music import Music
 
@@ -15,13 +15,13 @@ def get_prefix(_client, message):
     return config[str(message.guild.id)]["prefix"]
 
 
-intents = discord.Intents.all()
+intents = nextcord.Intents.all()
 client = commands.Bot(command_prefix=get_prefix, intents=intents)
 
 
 @client.event
 async def on_ready():
-    await client.change_presence(status=discord.Status.online)
+    await client.change_presence(status=nextcord.Status.online)
     client.add_cog(Music(client))
     print("Bot is ready.")
 
@@ -105,7 +105,7 @@ async def on_voice_state_update(member, before, after):
         return
 
     async def embed(title, colour, target_channel):
-        join_embed = discord.Embed(
+        join_embed = nextcord.Embed(
             title=title,
             colour=colour
         )
@@ -117,9 +117,9 @@ async def on_voice_state_update(member, before, after):
         await channel.send(embed=join_embed)
 
     if before.channel is None and after.channel is not None:
-        await embed('Voice Join', discord.Colour.green(), after.channel)
+        await embed('Voice Join', nextcord.Colour.green(), after.channel)
     elif before.channel is not None and after.channel is None:
-        await embed('Voice Leave', discord.Colour.red(), before.channel)
+        await embed('Voice Leave', nextcord.Colour.red(), before.channel)
 
 
 with open("token.txt", "r") as f:

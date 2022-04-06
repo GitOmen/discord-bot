@@ -1,15 +1,15 @@
 import re
 
-import discord
+import nextcord
 import lavalink
-from discord.ext import commands
+from nextcord.ext import commands
 
 url_rx = re.compile(r'https?://(?:www\.)?.+')
 
 
-class LavalinkVoiceClient(discord.VoiceClient):
+class LavalinkVoiceClient(nextcord.VoiceClient):
 
-    def __init__(self, client: discord.Client, channel: discord.abc.Connectable):
+    def __init__(self, client: nextcord.Client, channel: nextcord.abc.Connectable):
         # super().__init__(client, channel)
         self.client = client
         self.channel = channel
@@ -134,7 +134,7 @@ class Music(commands.Cog):
         if not results or not results['tracks']:
             return await ctx.send('Nothing found!')
 
-        embed = discord.Embed(color=discord.Color.blurple())
+        embed = nextcord.Embed(color=nextcord.Color.blurple())
 
         if results['loadType'] == 'PLAYLIST_LOADED':
             tracks = results['tracks']
