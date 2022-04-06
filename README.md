@@ -3,8 +3,8 @@
 This is a multi-functional discord bot created with following technologies:
 
 - Python 3.9
-- [discord.py](https://github.com/Rapptz/discord.py) 1.7.3
-- [lavalink](https://github.com/Devoxin/Lavalink.py) 3.1.4
+- [nextcord](https://github.com/nextcord/nextcord/) 2.0.0a10
+- [lavalink](https://github.com/Devoxin/Lavalink.py) 3.1.5
 
 # Features
 
