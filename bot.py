@@ -109,7 +109,7 @@ async def on_voice_state_update(member, before, after):
             title=title,
             colour=colour
         )
-        join_embed.set_author(name=member.name, icon_url=member.avatar_url)
+        join_embed.set_author(name=member.name, icon_url=member.avatar.url)
         join_embed.add_field(name='User', value=member.mention, inline=True)
         join_embed.add_field(name='Channel', value=target_channel.name, inline=True)
         join_embed.timestamp = datetime.utcnow()
